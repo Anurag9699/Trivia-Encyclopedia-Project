@@ -111,7 +111,7 @@ function Scene({
     const controlsRef = useRef<any>(null);
     const [cameraTarget, setCameraTarget] = useState<THREE.Vector3 | null>(null);
     const [isAnimating, setIsAnimating] = useState(false);
-    const [hovering, setHovering] = useState(false);
+    const [hovering] = useState(false);
 
     const positions = useMemo(
         () => fibonacciSphere(movies.length, 20),
