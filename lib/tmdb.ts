@@ -8,14 +8,17 @@ export function getPosterUrl(posterPath: string | null): string {
     return `${TMDB_IMAGE_BASE}${posterPath}`;
 }
 
-export async function fetchPopularMovies(page: number = 1): Promise<Movie[]> {
+async function fetchMoviesFromEndpoint(
+    endpoint: string,
+    page: number
+): Promise<Movie[]> {
     const apiKey = process.env.TMDB_API_KEY;
     if (!apiKey) {
         throw new Error('TMDB_API_KEY is not set in environment variables');
     }
 
     const response = await fetch(
-        `${TMDB_BASE_URL}/movie/popular?api_key=${apiKey}&language=en-US&page=${page}`,
+        `${TMDB_BASE_URL}${endpoint}?api_key=${apiKey}&language=en-US&page=${page}`,
         { next: { revalidate: 3600 } }
     );
 
@@ -34,7 +37,20 @@ export async function fetchPopularMovies(page: number = 1): Promise<Movie[]> {
             releaseDate: movie.release_date,
             voteAverage: movie.vote_average,
             overview: movie.overview,
+            genreIds: movie.genre_ids || [],
         }));
+}
+
+export async function fetchPopularMovies(page: number = 1): Promise<Movie[]> {
+    return fetchMoviesFromEndpoint('/movie/popular', page);
+}
+
+export async function fetchTopRatedMovies(page: number = 1): Promise<Movie[]> {
+    return fetchMoviesFromEndpoint('/movie/top_rated', page);
+}
+
+export async function fetchNowPlayingMovies(page: number = 1): Promise<Movie[]> {
+    return fetchMoviesFromEndpoint('/movie/now_playing', page);
 }
 
 export async function searchMovies(query: string): Promise<Movie[]> {
@@ -63,5 +79,6 @@ export async function searchMovies(query: string): Promise<Movie[]> {
             releaseDate: movie.release_date,
             voteAverage: movie.vote_average,
             overview: movie.overview,
+            genreIds: movie.genre_ids || [],
         }));
 }
