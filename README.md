@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Trivia Encyclopedia
 
-## Getting Started
+A cinematic 3D interactive movie trivia web application. Explore hundreds of movies arranged in a stunning WebGL sphere, click any poster to discover AI-generated trivia facts.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
+![Three.js](https://img.shields.io/badge/Three.js-WebGL-black?style=flat-square&logo=three.js)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=flat-square&logo=tailwindcss)
+
+## ✨ Features
+
+- **3D Poster Sphere** — 200 movie posters arranged in a Fibonacci sphere with orbit controls
+- **Cinematic UI** — Dark theme with glassmorphism, smooth animations, and backdrop blur
+- **AI Trivia** — 5 engaging trivia facts generated per movie via OpenAI
+- **Search** — Real-time search with debounced input
+- **Interactive** — Hover scaling, camera zoom on click, ESC to close
+- **Performance** — Lazy-loaded textures, dynamic imports, in-memory trivia cache
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+- [TMDB API Key](https://www.themoviedb.org/settings/api)
+- [OpenAI API Key](https://platform.openai.com/api-keys) *(optional — fallback trivia is provided)*
+
+### Setup
 
 ```bash
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Copy environment variables
+cp .env.example .env.local
+
+# Add your API keys to .env.local
+# TMDB_API_KEY=your_key_here
+# OPENAI_API_KEY=your_key_here
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── app/
+│   ├── api/
+│   │   ├── movies/route.ts     # TMDB movie data endpoint
+│   │   └── trivia/route.ts     # AI trivia generation endpoint
+│   ├── globals.css             # Dark cinematic styles
+│   ├── layout.tsx              # Root layout with SEO metadata
+│   └── page.tsx                # Main application page
+├── components/
+│   ├── LoadingScreen.tsx       # Cinematic loading animation
+│   ├── MovieModal.tsx          # Movie details + trivia modal
+│   ├── Poster.tsx              # Individual 3D poster billboard
+│   ├── SearchBar.tsx           # Glassmorphism search input
+│   └── SphereLayout.tsx        # R3F Canvas with sphere layout
+├── lib/
+│   ├── openai.ts               # OpenAI trivia generation
+│   ├── tmdb.ts                 # TMDB data fetching
+│   └── types.ts                # TypeScript interfaces
+├── .env.example
+├── next.config.mjs
+├── tailwind.config.ts
+└── tsconfig.json
+```
 
-## Learn More
+## 🛠 Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+| Technology | Purpose |
+|---|---|
+| Next.js 14 | App Router, API routes, SSR |
+| TypeScript | Type safety |
+| Tailwind CSS | Styling |
+| React Three Fiber | 3D rendering |
+| Drei | R3F helpers (Billboard, OrbitControls) |
+| Framer Motion | Animations |
+| OpenAI API | Trivia generation |
+| TMDB API | Movie data |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
