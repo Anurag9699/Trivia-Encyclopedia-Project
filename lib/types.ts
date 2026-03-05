@@ -8,8 +8,13 @@ export interface Movie {
   genreIds: number[];
 }
 
+export interface TriviaFact {
+  title: string;
+  explanation: string;
+}
+
 export interface TriviaResponse {
-  facts: string[];
+  facts: TriviaFact[];
   cached: boolean;
 }
 

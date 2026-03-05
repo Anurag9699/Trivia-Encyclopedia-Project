@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { generateTrivia } from '@/lib/openai';
+import { generateTrivia, TriviaFact } from '@/lib/openai';
 
 // In-memory cache to avoid repeated API calls
-const triviaCache = new Map<string, string[]>();
+const triviaCache = new Map<string, TriviaFact[]>();
 
 export async function POST(request: Request) {
     try {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Movie, TriviaResponse, GENRE_MAP } from '@/lib/types';
+import { Movie, TriviaFact, TriviaResponse, GENRE_MAP } from '@/lib/types';
 
 interface MovieModalProps {
     movie: Movie | null;
@@ -34,7 +34,7 @@ function AnimatedRating({ value }: { value: number }) {
 }
 
 export default function MovieModal({ movie, onClose }: MovieModalProps) {
-    const [trivia, setTrivia] = useState<string[]>([]);
+    const [trivia, setTrivia] = useState<TriviaFact[]>([]);
     const [isLoadingTrivia, setIsLoadingTrivia] = useState(false);
     const [revealedFacts, setRevealedFacts] = useState(0);
 
@@ -57,7 +57,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
             });
         } catch (error) {
             console.error('Failed to fetch trivia:', error);
-            setTrivia(['Unable to load trivia at this time.']);
+            setTrivia([{ title: 'Oops!', explanation: 'Unable to load trivia at this time. Please try again later.' }]);
             setRevealedFacts(1);
         } finally {
             setIsLoadingTrivia(false);
@@ -214,50 +214,140 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.35 }}
                                 >
-                                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                                        <span className="text-xl">🎬</span>
-                                        Trivia Facts
-                                        <span className="text-xs text-gray-500 font-normal ml-1">
-                                            AI-generated
-                                        </span>
-                                    </h3>
+                                    {/* Section Header */}
+                                    <div className="flex items-center gap-3 mb-5">
+                                        <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/20 shadow-lg shadow-amber-500/10">
+                                            <span className="text-lg">💡</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-base font-bold text-white tracking-tight">
+                                                Did You Know?
+                                            </h3>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-widest font-medium">
+                                                AI-Powered Trivia
+                                            </p>
+                                        </div>
+                                        <div className="flex-1 h-[1px] bg-gradient-to-r from-purple-500/30 via-blue-500/20 to-transparent ml-2" />
+                                    </div>
 
                                     {isLoadingTrivia ? (
                                         <div className="space-y-3">
                                             {[...Array(5)].map((_, i) => (
-                                                <motion.div
+                                                <div
                                                     key={i}
-                                                    className="h-5 bg-white/5 rounded-lg"
-                                                    animate={{ opacity: [0.3, 0.6, 0.3] }}
-                                                    transition={{
-                                                        duration: 1.5,
-                                                        repeat: Infinity,
-                                                        delay: i * 0.1,
-                                                    }}
-                                                    style={{ width: `${70 + Math.random() * 30}%` }}
-                                                />
+                                                    className="relative rounded-xl border border-white/[0.04] bg-white/[0.02] p-4 overflow-hidden"
+                                                >
+                                                    <div className="flex items-start gap-3">
+                                                        <motion.div
+                                                            className="flex-shrink-0 w-7 h-7 rounded-lg bg-white/[0.06]"
+                                                            animate={{ opacity: [0.3, 0.6, 0.3] }}
+                                                            transition={{
+                                                                duration: 1.5,
+                                                                repeat: Infinity,
+                                                                delay: i * 0.15,
+                                                            }}
+                                                        />
+                                                        <div className="flex-1 space-y-2">
+                                                            <motion.div
+                                                                className="h-3.5 bg-white/[0.06] rounded-md"
+                                                                animate={{ opacity: [0.3, 0.6, 0.3] }}
+                                                                transition={{
+                                                                    duration: 1.5,
+                                                                    repeat: Infinity,
+                                                                    delay: i * 0.15 + 0.05,
+                                                                }}
+                                                                style={{ width: `${75 + Math.random() * 25}%` }}
+                                                            />
+                                                            <motion.div
+                                                                className="h-3.5 bg-white/[0.04] rounded-md"
+                                                                animate={{ opacity: [0.2, 0.4, 0.2] }}
+                                                                transition={{
+                                                                    duration: 1.5,
+                                                                    repeat: Infinity,
+                                                                    delay: i * 0.15 + 0.1,
+                                                                }}
+                                                                style={{ width: `${40 + Math.random() * 35}%` }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    {/* Shimmer sweep */}
+                                                    <motion.div
+                                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent"
+                                                        animate={{ x: ['-100%', '200%'] }}
+                                                        transition={{
+                                                            duration: 2,
+                                                            repeat: Infinity,
+                                                            delay: i * 0.2,
+                                                            ease: 'linear',
+                                                        }}
+                                                    />
+                                                </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <ul className="space-y-2.5">
-                                            {trivia.map((fact, i) => (
-                                                <motion.li
-                                                    key={i}
-                                                    className="flex items-start gap-3 text-sm text-gray-300"
-                                                    initial={{ opacity: 0, x: -20 }}
-                                                    animate={{
-                                                        opacity: i < revealedFacts ? 1 : 0,
-                                                        x: i < revealedFacts ? 0 : -20,
-                                                    }}
-                                                    transition={{ type: 'spring', stiffness: 200 }}
-                                                >
-                                                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-[10px] font-bold text-white mt-0.5 shadow-lg shadow-purple-500/30">
-                                                        {i + 1}
-                                                    </span>
-                                                    <span className="leading-relaxed">{fact}</span>
-                                                </motion.li>
-                                            ))}
-                                        </ul>
+                                        <div className="space-y-2.5">
+                                            {trivia.map((fact, i) => {
+                                                const icons = ['🎬', '⭐', '🎭', '🏆', '🎵'];
+                                                const gradients = [
+                                                    'from-purple-500 to-blue-500',
+                                                    'from-amber-500 to-orange-500',
+                                                    'from-emerald-500 to-teal-500',
+                                                    'from-rose-500 to-pink-500',
+                                                    'from-cyan-500 to-blue-500',
+                                                ];
+                                                return (
+                                                    <motion.div
+                                                        key={i}
+                                                        initial={{ opacity: 0, x: -30, scale: 0.95 }}
+                                                        animate={{
+                                                            opacity: i < revealedFacts ? 1 : 0,
+                                                            x: i < revealedFacts ? 0 : -30,
+                                                            scale: i < revealedFacts ? 1 : 0.95,
+                                                        }}
+                                                        transition={{
+                                                            type: 'spring',
+                                                            stiffness: 180,
+                                                            damping: 20,
+                                                        }}
+                                                        className="group/fact relative"
+                                                    >
+                                                        {/* Hover glow */}
+                                                        <div className={`absolute -inset-[0.5px] rounded-xl bg-gradient-to-r ${gradients[i % gradients.length]} opacity-0 group-hover/fact:opacity-20 transition-opacity duration-500 blur-[0.5px]`} />
+
+                                                        <div className="relative rounded-xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm overflow-hidden transition-all duration-300 group-hover/fact:bg-white/[0.06] group-hover/fact:border-white/[0.1]">
+                                                            {/* Left gradient accent bar */}
+                                                            <div className={`absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b ${gradients[i % gradients.length]} opacity-60 group-hover/fact:opacity-100 transition-opacity duration-300`} />
+
+                                                            <div className="flex items-start gap-3.5 p-4 pl-5">
+                                                                {/* Icon badge */}
+                                                                <div className={`flex-shrink-0 w-9 h-9 rounded-lg bg-gradient-to-br ${gradients[i % gradients.length]} bg-opacity-10 flex items-center justify-center shadow-sm mt-0.5`}
+                                                                    style={{
+                                                                        background: `linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.10))`,
+                                                                    }}
+                                                                >
+                                                                    <span className="text-base">{icons[i % icons.length]}</span>
+                                                                </div>
+
+                                                                {/* Fact content */}
+                                                                <div className="flex-1 min-w-0">
+                                                                    <h4 className="text-[13px] font-semibold text-white mb-1 group-hover/fact:text-purple-200 transition-colors duration-300">
+                                                                        {fact.title}
+                                                                    </h4>
+                                                                    <p className="text-[12px] text-gray-400 leading-relaxed group-hover/fact:text-gray-300 transition-colors duration-300">
+                                                                        {fact.explanation}
+                                                                    </p>
+                                                                </div>
+
+                                                                {/* Fact number */}
+                                                                <span className="flex-shrink-0 text-[10px] text-gray-600 font-mono mt-0.5">
+                                                                    {String(i + 1).padStart(2, '0')}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
+                                        </div>
                                     )}
                                 </motion.div>
                             </div>

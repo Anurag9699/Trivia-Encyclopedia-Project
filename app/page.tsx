@@ -7,6 +7,7 @@ import MovieModal from '@/components/MovieModal';
 import SearchBar from '@/components/SearchBar';
 import GenreFilter from '@/components/GenreFilter';
 import LoadingScreen from '@/components/LoadingScreen';
+import SearchResults from '@/components/SearchResults';
 
 // Dynamic import to avoid SSR issues with Three.js
 const SphereLayout = dynamic(() => import('@/components/SphereLayout'), {
@@ -89,22 +90,36 @@ export default function Home() {
       {!isLoading && (
         <>
           <SearchBar onSearch={handleSearch} />
-          <GenreFilter selectedGenre={selectedGenre} onSelectGenre={handleSelectGenre} />
+          {!searchQuery.trim() && (
+            <GenreFilter selectedGenre={selectedGenre} onSelectGenre={handleSelectGenre} />
+          )}
 
-          {displayMovies.length > 0 ? (
-            <SphereLayout
-              movies={displayMovies}
+          {/* 3D Sphere — hidden when searching */}
+          <div style={{ display: searchQuery.trim() ? 'none' : 'block' }} className="w-full h-full">
+            {displayMovies.length > 0 ? (
+              <SphereLayout
+                movies={displayMovies}
+                onSelectMovie={handleSelectMovie}
+                dimmedIds={activeMovieIds}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500 text-lg">
+                  {movies.length === 0
+                    ? 'Loading movies...'
+                    : 'No movies match your search.'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* 2D Search Results Overlay */}
+          {searchQuery.trim() && (
+            <SearchResults
+              movies={searchFiltered}
+              query={searchQuery}
               onSelectMovie={handleSelectMovie}
-              dimmedIds={activeMovieIds}
             />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500 text-lg">
-                {movies.length === 0
-                  ? 'Loading movies...'
-                  : 'No movies match your search.'}
-              </p>
-            </div>
           )}
 
           {/* Movie count indicator */}

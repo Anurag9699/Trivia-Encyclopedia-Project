@@ -4,7 +4,7 @@ A **3D interactive movie trivia web application** built with Next.js, React Thre
 
 ![Trivia Encyclopedia - 3D Sphere](https://img.shields.io/badge/Movies-300%2B-purple?style=for-the-badge) ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js) ![Three.js](https://img.shields.io/badge/Three.js-WebGL-blue?style=for-the-badge&logo=three.js) ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript)
 
----
+
 
 ## ✨ Features
 
